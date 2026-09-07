@@ -1,0 +1,67 @@
+/* UP Mithas - shared custom styles (used alongside Tailwind CDN utility classes) */
+
+.texture-overlay {
+  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.04"/%3E%3C/svg%3E');
+  pointer-events: none;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.input-ledger {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #421904;
+  border-radius: 0;
+  padding: 12px 0;
+  box-shadow: none !important;
+  transition: border-width 0.2s ease;
+}
+.input-ledger:focus {
+  outline: none;
+  border-bottom-width: 2px;
+  border-color: #421904;
+  box-shadow: none !important;
+}
+.input-ledger.error {
+  border-color: #ba1a1a;
+}
+
+/* Cart drawer + overlay */
+#cart-overlay {
+  transition: opacity 0.3s ease;
+}
+#cart-drawer {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile menu slide */
+#mobile-menu {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+/* Toast */
+#toast {
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+/* Filter chip active state helper */
+.filter-chip.active {
+  border-color: #421904;
+  color: #421904;
+  background-color: rgba(66, 25, 4, 0.05);
+}
+
+/* Nav active underline */
+.nav-link.active {
+  color: #421904;
+  font-weight: 700;
+  border-bottom: 2px solid #421904;
+  padding-bottom: 4px;
+}
+
+::selection {
+  background: #d99577;
+  color: #351000;
+}

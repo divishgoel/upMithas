@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>UP Mithas - Wholesale &amp; Bulk Orders</title>
+<meta name="description" content="Partner with UP Mithas for premium bulk jaggery, shakar, and desi khand. Competitive wholesale pricing for retailers, bakeries, and restaurants."/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "error": "#ba1a1a", "inverse-on-surface": "#f4f0eb", "surface-tint": "#885037",
+          "outline": "#85736d", "surface-bright": "#fdf9f4", "on-error-container": "#93000a",
+          "secondary-fixed": "#ffddb9", "on-tertiary": "#ffffff", "surface-container-high": "#ebe8e3",
+          "surface-container-low": "#f7f3ee", "on-secondary-container": "#6f4300", "on-primary-fixed-variant": "#6b3922",
+          "secondary-container": "#fcae4a", "on-primary-fixed": "#351000", "inverse-primary": "#feb696",
+          "on-tertiary-fixed": "#141f00", "on-secondary-fixed-variant": "#663e00", "error-container": "#ffdad6",
+          "surface-variant": "#e6e2dd", "surface-container": "#f1ede8", "primary": "#421904",
+          "on-primary-container": "#d99577", "primary-container": "#5d2e17", "tertiary-container": "#2f4008",
+          "surface-dim": "#ddd9d5", "secondary-fixed-dim": "#ffb963", "on-surface": "#1c1c19",
+          "primary-fixed-dim": "#feb696", "primary-fixed": "#ffdbcc", "surface": "#fdf9f4",
+          "inverse-surface": "#31302d", "on-tertiary-container": "#97ad69", "on-primary": "#ffffff",
+          "secondary": "#875300", "tertiary": "#1c2900", "on-background": "#1c1c19",
+          "on-surface-variant": "#52443e", "tertiary-fixed-dim": "#b8cf88", "outline-variant": "#d7c2ba",
+          "on-secondary-fixed": "#2b1700", "background": "#fdf9f4", "tertiary-fixed": "#d4eca2",
+          "on-secondary": "#ffffff", "on-error": "#ffffff", "surface-container-lowest": "#ffffff",
+          "surface-container-highest": "#e6e2dd", "on-tertiary-fixed-variant": "#3b4d14"
+        },
+        borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" },
+        spacing: { gutter: "24px", "container-max": "1200px", unit: "8px", "margin-mobile": "16px", "margin-desktop": "48px" },
+        fontFamily: {
+          "body-md": ["Work Sans"], "display-lg-mobile": ['"Source Serif 4"'], "display-lg": ['"Source Serif 4"'],
+          "label-md": ["Work Sans"], "headline-md": ['"Source Serif 4"'], "headline-sm": ['"Source Serif 4"'], "body-lg": ["Work Sans"]
+        },
+        fontSize: {
+          "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+          "display-lg-mobile": ["32px", { lineHeight: "40px", fontWeight: "700" }],
+          "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+          "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.05em", fontWeight: "600" }],
+          "headline-md": ["32px", { lineHeight: "40px", fontWeight: "600" }],
+          "headline-sm": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+          "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }]
+        }
+      }
+    }
+  }
+</script>
+<link rel="stylesheet" href="css/custom.css"/>
+</head>
+<body class="bg-surface-container-low text-on-surface font-body-md antialiased min-h-screen flex flex-col relative">
+<div class="fixed inset-0 texture-overlay z-0 pointer-events-none"></div>
+
+<!-- Nav -->
+<nav class="bg-surface-container-low text-primary font-body-md text-body-md w-full top-0 sticky border-b border-primary/15 z-30">
+<div class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<a href="index.html" class="font-headline-md text-headline-md text-primary">UP Mithas</a>
+<div class="hidden md:flex gap-8 items-center h-full">
+<a class="nav-link text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 h-full flex items-center px-2" href="index.html">Home</a>
+<a class="nav-link text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 h-full flex items-center px-2" href="shop.html">Products</a>
+<a class="nav-link text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 h-full flex items-center px-2" href="wholesale.html">Wholesale</a>
+<a class="nav-link text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 h-full flex items-center px-2" href="heritage.html">Our Story</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="cart-btn relative p-2 hover:bg-surface-container rounded-full transition-colors group" aria-label="Open cart">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">shopping_cart</span>
+<span class="cart-count hidden absolute top-0 right-0 bg-secondary text-on-secondary text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+</button>
+<button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-surface-container rounded-full transition-colors" aria-label="Open menu">
+<span class="material-symbols-outlined text-on-surface-variant">menu</span>
+</button>
+</div>
+</div>
+<div id="mobile-menu" class="hidden md:hidden flex flex-col gap-1 px-margin-mobile pb-4 border-t border-primary/10">
+<a class="nav-link py-3 text-on-surface-variant font-medium" href="index.html">Home</a>
+<a class="nav-link py-3 text-on-surface-variant font-medium" href="shop.html">Products</a>
+<a class="nav-link py-3 text-on-surface-variant font-medium" href="wholesale.html">Wholesale</a>
+<a class="nav-link py-3 text-on-surface-variant font-medium" href="heritage.html">Our Story</a>
+</div>
+</nav>
+
+<main class="flex-grow flex flex-col relative z-10">
+<!-- Hero -->
+<section class="relative pt-24 pb-32 px-margin-mobile md:px-margin-desktop flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0 opacity-40">
+<div class="bg-cover bg-center w-full h-full" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBGEOBQQI9UXKHh5Mgohb0sE6uQ7Vo9jxSUesejC0174zXS_uiDSVJjiufyf-4TfLF238PDSZrKZd3IcAjMgnytJ_f3HxeKA01BsAdXzjO5y3JsGUz6m0nCMDE227ygxXxxpgB7lHAHj2JHAyUXTQ5XkjS4_efKiIhvuMexjpjvVi3r_68Gn2x3N1Ng2Zp1TK4CQCGSdLRZbIuGpQdL1AFn-EPoGl-0n3BvB4ZQNj4hr9l4dx7cEde_1FdvgQzsScdM_QvmCEZfHaM')"></div>
+<div class="absolute inset-0 bg-surface-container-low/80 backdrop-blur-[2px]"></div>
+</div>
+<div class="relative z-10 max-w-container-max mx-auto text-center flex flex-col items-center">
+<span class="inline-flex items-center gap-2 px-3 py-1 border border-tertiary-fixed-dim/50 rounded-full text-on-tertiary-fixed-variant font-label-md text-label-md mb-6 uppercase tracking-wider backdrop-blur-sm">
+<span class="material-symbols-outlined text-[18px]">agriculture</span>
+Direct from Farm
+</span>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-6 max-w-3xl leading-tight">Partner with Us for Pure Sweetness</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-10">Elevate your offerings with our artisanal, unrefined jaggery. We provide premium bulk sweeteners to restaurants, bakeries, and specialty retailers who value authenticity and quality.</p>
+<a class="inline-flex items-center justify-center px-8 py-4 bg-primary text-on-primary font-label-md text-label-md rounded shadow-sm hover:opacity-90 transition-opacity" href="#inquiry-form">Inquire Now</a>
+</div>
+</section>
+
+<!-- Benefits & Form -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop relative">
+<div class="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+<!-- Benefits -->
+<div class="lg:col-span-5 flex flex-col gap-16">
+<div>
+<h2 class="font-headline-md text-headline-md text-primary mb-8 border-b border-primary/10 pb-4">Wholesale Benefits</h2>
+<ul class="flex flex-col gap-8">
+<li class="flex gap-4 items-start">
+<div class="mt-1 w-8 h-8 rounded-full bg-surface-container flex items-center justify-center shrink-0 border border-primary/10">
+<span class="material-symbols-outlined text-secondary text-[20px]">workspace_premium</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Quality Assurance</h3>
+<p class="text-on-surface-variant leading-relaxed">Every batch is crafted using traditional methods, ensuring zero chemicals, consistent flavor profiles, and premium artisanal quality for your discerning customers.</p>
+</div>
+</li>
+<li class="flex gap-4 items-start">
+<div class="mt-1 w-8 h-8 rounded-full bg-surface-container flex items-center justify-center shrink-0 border border-primary/10">
+<span class="material-symbols-outlined text-secondary text-[20px]">payments</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Competitive Pricing</h3>
+<p class="text-on-surface-variant leading-relaxed">Direct-from-farm sourcing allows us to offer attractive volume-based pricing tiers without compromising on the ethical compensation of our farmers.</p>
+</div>
+</li>
+<li class="flex gap-4 items-start">
+<div class="mt-1 w-8 h-8 rounded-full bg-surface-container flex items-center justify-center shrink-0 border border-primary/10">
+<span class="material-symbols-outlined text-secondary text-[20px]">local_shipping</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Consistent Supply</h3>
+<p class="text-on-surface-variant leading-relaxed">Robust logistics and careful inventory management guarantee reliable delivery schedules to keep your operations running smoothly year-round.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="bg-surface-container p-8 border border-primary/15 rounded">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-6">Direct Contact</h3>
+<div class="flex flex-col gap-4">
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors group" href="tel:+918001234567">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">call</span>
+<span class="font-medium">+91 (800) 123-4567</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors group" href="mailto:wholesale@upmithas.com">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">mail</span>
+<span class="font-medium">wholesale@upmithas.com</span>
+</a>
+</div>
+</div>
+</div>
+
+<!-- Form -->
+<div class="lg:col-span-7" id="inquiry-form">
+<div class="bg-surface-container-low p-8 md:p-12 border border-primary/15 shadow-[0_4px_24px_-12px_rgba(66,25,4,0.1)] rounded relative">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+<h2 class="font-headline-md text-headline-md text-primary mb-2">Start a Conversation</h2>
+<p class="text-on-surface-variant mb-10">Tell us about your requirements, and our wholesale team will get back to you within 24 hours.</p>
+
+<form id="wholesale-form" class="flex flex-col gap-8" novalidate>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="relative">
+<label class="font-label-md text-label-md text-primary absolute -top-5 left-0" for="name">Full Name</label>
+<input class="input-ledger w-full text-on-surface font-body-md text-body-md bg-transparent placeholder-outline/50" id="name" name="name" placeholder="Jane Doe" required type="text"/>
+</div>
+<div class="relative">
+<label class="font-label-md text-label-md text-primary absolute -top-5 left-0" for="company">Company Name</label>
+<input class="input-ledger w-full text-on-surface font-body-md text-body-md bg-transparent placeholder-outline/50" id="company" name="company" placeholder="Artisan Bakery Co." required type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+<div class="relative">
+<label class="font-label-md text-label-md text-primary absolute -top-5 left-0" for="email">Email Address</label>
+<input class="input-ledger w-full text-on-surface font-body-md text-body-md bg-transparent placeholder-outline/50" id="email" name="email" placeholder="example@gmail.com" required type="email"/>
+</div>
+<div class="relative">
+<label class="font-label-md text-label-md text-primary absolute -top-5 left-0" for="phone">Phone Number</label>
+<input class="input-ledger w-full text-on-surface font-body-md text-body-md bg-transparent placeholder-outline/50" id="phone" name="phone" placeholder="+91 0000000000" type="tel"/>
+</div>
+</div>
+<div class="relative mt-4">
+<label class="font-label-md text-label-md text-primary absolute -top-5 left-0" for="requirement">Estimated Monthly Requirement (kg)</label>
+<select class="input-ledger w-full text-on-surface font-body-md text-body-md bg-transparent appearance-none cursor-pointer" id="requirement" name="requirement" required>
+<option class="text-outline/50" disabled selected value="">Select volume...</option>
+<option value="50-100">50 - 100 kg</option>
+<option value="101-500">101 - 500 kg</option>
+<option value="501-1000">501 - 1000 kg</option>
+<option value="1000+">1000+ kg</option>
+</select>
+<div class="absolute right-0 bottom-3 pointer-events-none text-primary">
+<span class="material-symbols-outlined">arrow_drop_down</span>
+</div>
+</div>
+<div class="relative mt-4">
+<label class="font-label-md text-label-md text-primary absolute -top-5 left-0" for="message">Additional Details</label>
+<textarea class="input-ledger w-full text-on-surface font-body-md text-body-md bg-transparent placeholder-outline/50 resize-y min-h-[100px]" id="message" name="message" placeholder="Please tell us about your specific product interests or any custom requirements..." rows="4"></textarea>
+</div>
+<div class="pt-4 flex items-center justify-between">
+<span class="text-sm text-outline flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">lock</span> Secure inquiry
+</span>
+<button class="px-8 py-3 bg-primary text-on-primary font-label-md text-label-md rounded hover:bg-primary/90 transition-colors flex items-center gap-2" type="submit">
+Submit Inquiry <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</form>
+
+<div id="form-success" class="hidden text-center py-10">
+<span class="material-symbols-outlined text-secondary text-5xl mb-4 block">check_circle</span>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2">Inquiry Received!</h3>
+<p class="text-on-surface-variant">Thank you for reaching out. Our wholesale team will contact you within 24 hours.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-surface-container text-on-surface font-body-md text-body-md w-full mt-margin-desktop relative z-10">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter py-16 px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col gap-4 md:col-span-1">
+<span class="font-headline-sm text-headline-sm text-primary">UP Mithas</span>
+<p class="text-sm text-on-surface-variant mt-2 max-w-[200px]">Artisanal Traditional Sweeteners, crafted with care.</p>
+</div>
+<div class="flex flex-col gap-3">
+<a class="text-on-surface-variant hover:text-secondary transition-colors" href="shop.html">Retail Products</a>
+<a class="text-primary underline" href="wholesale.html">Wholesale Inquiries</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors" href="heritage.html">About Our Farm</a>
+</div>
+<div class="flex flex-col gap-3">
+<a class="text-on-surface-variant hover:text-secondary transition-colors" href="heritage.html">Sustainability</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors" href="#inquiry-form">Contact Us</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors" href="#">Shipping Policy</a>
+</div>
+<div class="flex flex-col justify-end items-start md:items-end mt-8 md:mt-0">
+<span class="text-sm text-on-surface-variant">© 2024 UP Mithas. Artisanal Traditional Sweeteners.</span>
+</div>
+</div>
+</footer>
+
+<!-- Cart Drawer -->
+<div id="cart-overlay" class="hidden fixed inset-0 bg-black/40 z-40"></div>
+<div id="cart-drawer" class="translate-x-full fixed top-0 right-0 h-full w-full max-w-md bg-surface-bright z-50 flex flex-col shadow-2xl">
+<div class="flex items-center justify-between p-6 border-b border-primary/15">
+<h3 class="font-headline-sm text-headline-sm text-primary">Your Cart</h3>
+<button id="cart-close-btn" class="text-primary hover:opacity-70"><span class="material-symbols-outlined">close</span></button>
+</div>
+<div class="flex-grow overflow-y-auto px-6">
+<p id="cart-empty" class="text-on-surface-variant text-sm py-10 text-center">Your cart is empty. Start adding some sweetness!</p>
+<div id="cart-items"></div>
+</div>
+<div class="p-6 border-t border-primary/15">
+<div class="flex justify-between items-center mb-4">
+<span class="font-medium text-on-surface">Subtotal</span>
+<span id="cart-total" class="font-headline-sm text-headline-sm text-secondary">₹0</span>
+</div>
+<button id="checkout-btn" class="w-full bg-primary text-on-primary py-3 rounded hover:bg-primary/90 transition-colors font-label-md text-label-md uppercase tracking-wider">Checkout</button>
+</div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 bg-primary text-on-primary px-6 py-3 rounded shadow-lg z-50 text-sm font-medium"></div>
+
+<script src="js/main.js"></script>
+</body>
+</html>

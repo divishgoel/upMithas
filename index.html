@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>UP Mithas - The Pure Sweetness of Tradition</title>
+<meta name="description" content="Authentic Jaggery, Shakar &amp; Desi Khand from the heart of Uttar Pradesh, delivered to your doorstep."/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "error": "#ba1a1a", "inverse-on-surface": "#f4f0eb", "surface-tint": "#885037",
+          "outline": "#85736d", "surface-bright": "#fdf9f4", "on-error-container": "#93000a",
+          "secondary-fixed": "#ffddb9", "on-tertiary": "#ffffff", "surface-container-high": "#ebe8e3",
+          "surface-container-low": "#f7f3ee", "on-secondary-container": "#6f4300", "on-primary-fixed-variant": "#6b3922",
+          "secondary-container": "#fcae4a", "on-primary-fixed": "#351000", "inverse-primary": "#feb696",
+          "on-tertiary-fixed": "#141f00", "on-secondary-fixed-variant": "#663e00", "error-container": "#ffdad6",
+          "surface-variant": "#e6e2dd", "surface-container": "#f1ede8", "primary": "#421904",
+          "on-primary-container": "#d99577", "primary-container": "#5d2e17", "tertiary-container": "#2f4008",
+          "surface-dim": "#ddd9d5", "secondary-fixed-dim": "#ffb963", "on-surface": "#1c1c19",
+          "primary-fixed-dim": "#feb696", "primary-fixed": "#ffdbcc", "surface": "#fdf9f4",
+          "inverse-surface": "#31302d", "on-tertiary-container": "#97ad69", "on-primary": "#ffffff",
+          "secondary": "#875300", "tertiary": "#1c2900", "on-background": "#1c1c19",
+          "on-surface-variant": "#52443e", "tertiary-fixed-dim": "#b8cf88", "outline-variant": "#d7c2ba",
+          "on-secondary-fixed": "#2b1700", "background": "#fdf9f4", "tertiary-fixed": "#d4eca2",
+          "on-secondary": "#ffffff", "on-error": "#ffffff", "surface-container-lowest": "#ffffff",
+          "surface-container-highest": "#e6e2dd", "on-tertiary-fixed-variant": "#3b4d14"
+        },
+        borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" },
+        spacing: { gutter: "24px", "container-max": "1200px", unit: "8px", "margin-mobile": "16px", "margin-desktop": "48px" },
+        fontFamily: {
+          "body-md": ["Work Sans"], "display-lg-mobile": ['"Source Serif 4"'], "display-lg": ['"Source Serif 4"'],
+          "label-md": ["Work Sans"], "headline-md": ['"Source Serif 4"'], "headline-sm": ['"Source Serif 4"'], "body-lg": ["Work Sans"]
+        },
+        fontSize: {
+          "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+          "display-lg-mobile": ["32px", { lineHeight: "40px", fontWeight: "700" }],
+          "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+          "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.05em", fontWeight: "600" }],
+          "headline-md": ["32px", { lineHeight: "40px", fontWeight: "600" }],
+          "headline-sm": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+          "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }]
+        }
+      }
+    }
+  }
+</script>
+<link rel="stylesheet" href="css/custom.css"/>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased relative min-h-screen flex flex-col">
+<div class="fixed inset-0 texture-overlay z-40 pointer-events-none"></div>
+
+<!-- Nav -->
+<nav class="bg-background w-full top-0 sticky border-b border-primary/15 z-30">
+<div class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<a class="font-headline-md text-headline-md text-primary tracking-tight" href="index.html">UP Mithas</a>
+<div class="hidden md:flex items-center gap-8">
+<a class="nav-link text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 font-label-md text-label-md" href="index.html">Home</a>
+<a class="nav-link text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 font-label-md text-label-md" href="shop.html">Products</a>
+<a class="nav-link text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 font-label-md text-label-md" href="wholesale.html">Wholesale</a>
+<a class="nav-link text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 font-label-md text-label-md" href="heritage.html">Our Story</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="cart-btn relative text-primary hover:opacity-80 transition-opacity" aria-label="Open cart">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="cart-count hidden absolute -top-2 -right-2 bg-secondary text-on-secondary text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+</button>
+<button id="mobile-menu-btn" class="md:hidden text-primary" aria-label="Open menu">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+<div id="mobile-menu" class="hidden md:hidden flex flex-col gap-1 px-margin-mobile pb-4 bg-background border-t border-primary/10">
+<a class="nav-link py-3 text-on-surface-variant font-medium" href="index.html">Home</a>
+<a class="nav-link py-3 text-on-surface-variant font-medium" href="shop.html">Products</a>
+<a class="nav-link py-3 text-on-surface-variant font-medium" href="wholesale.html">Wholesale</a>
+<a class="nav-link py-3 text-on-surface-variant font-medium" href="heritage.html">Our Story</a>
+</div>
+</nav>
+
+<!-- Main -->
+<main class="flex-grow">
+<!-- Hero -->
+<section class="relative min-h-[819px] flex items-center justify-center overflow-hidden pt-12 pb-24 md:py-0">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuClYJFsa2yWw3rClKLdBmicAxgd8hxOVryH1AX85AiePyD93v3mdN7U6hKStOTW6voZAj3BzysCuE-3hayw4nrhQMQnkT-xL0DoRkB88EiDej1l3rjVHyrcDX64saXN5wSz_EdYeiRGVcYj4vgxc_y7jtsH_8llbS3TiEPZRJ6iKo7a-gOYALi53PQx60m2O25vKrK8hNQ1vhjpGwHiI_Rwvikkw9rJigSRCrBUFZ2uCLmYS2NxPIuTIUpXj8gH8sr8-hCU3Zl0GUk')"></div>
+<div class="absolute inset-0 bg-primary-container/40 mix-blend-multiply"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center mt-12 md:mt-0">
+<span class="inline-block px-4 py-1 border border-primary-fixed-dim/30 rounded-full text-primary-fixed-dim font-label-md text-label-md uppercase tracking-widest mb-6 bg-primary-container/20 backdrop-blur-sm">Harvest 2024</span>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary mb-6 max-w-3xl mx-auto drop-shadow-md">The Pure Sweetness of Tradition</h1>
+<p class="font-body-lg text-body-lg text-surface-container-high mb-10 max-w-2xl mx-auto drop-shadow">Authentic Jaggery &amp; Desi Khand from the heart of UP, delivered to your doorstep.</p>
+<div class="flex flex-col sm:flex-row justify-center gap-4">
+<a href="shop.html" class="bg-primary hover:bg-primary/90 text-on-primary font-label-md text-label-md px-8 py-4 rounded transition-colors shadow-sm">Shop Retail</a>
+<a href="wholesale.html" class="bg-transparent border border-surface-container-high text-surface-container-high hover:bg-surface-container-high/10 font-label-md text-label-md px-8 py-4 rounded transition-colors backdrop-blur-sm">Wholesale Inquiries</a>
+</div>
+</div>
+</section>
+
+<!-- Signature Products -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto bg-background">
+<div class="text-center mb-16">
+<h2 class="font-headline-md text-headline-md text-primary mb-4">Our Signature Products</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl mx-auto">Crafted with care, maintaining the natural minerals and distinct flavor of pure sugarcane.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<div class="md:col-span-8 bg-surface border border-primary/15 rounded-lg overflow-hidden group flex flex-col md:flex-row" data-category="gud" data-name="Artisanal Gud (Jaggery)" data-price="250" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuA8ymFUjUiA2glrQSGS7jJGHvkls0Ds_Ma_xtkIR1T51-WL7zJEBCQZPtLWNIW8bDRJWjmn6tRgXnrPGrHwhd6TgBSFZPvKQMccVE-aI-N3JoL0pql5Xj0lG17UgnMpplbQbES75VTvW8ZHN75v7Z7akP6x05MnFmntMaTsaVgFuVPx6CIj_CX_XaMcgHf7YKn-qUq_K3avj9PKN5JmtiH2PJU8x2MtDkRabPM2pS97bJrWgsSCwRJ-oMh5_m9S80csPpRBTZgmC4A">
+<div class="md:w-1/2 relative h-64 md:h-auto">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Artisanal Gud jaggery blocks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8ymFUjUiA2glrQSGS7jJGHvkls0Ds_Ma_xtkIR1T51-WL7zJEBCQZPtLWNIW8bDRJWjmn6tRgXnrPGrHwhd6TgBSFZPvKQMccVE-aI-N3JoL0pql5Xj0lG17UgnMpplbQbES75VTvW8ZHN75v7Z7akP6x05MnFmntMaTsaVgFuVPx6CIj_CX_XaMcgHf7YKn-qUq_K3avj9PKN5JmtiH2PJU8x2MtDkRabPM2pS97bJrWgsSCwRJ-oMh5_m9S80csPpRBTZgmC4A"/>
+</div>
+<div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+<span class="text-secondary font-label-md text-label-md uppercase tracking-wider mb-2">Bestseller</span>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-4">Artisanal Gud (Jaggery)</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">Our signature block jaggery, slowly cooked over traditional wood-fired pans to preserve deep molasses notes and essential minerals.</p>
+<button data-add-to-cart class="self-start bg-transparent border border-primary text-primary hover:bg-primary/5 font-label-md text-label-md px-6 py-3 rounded transition-colors">Buy Now — ₹250</button>
+</div>
+</div>
+
+<div class="md:col-span-4 bg-surface border border-primary/15 rounded-lg overflow-hidden group flex flex-col" data-category="shakar" data-name="Pure Shakar" data-price="180" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuDUAHEWnnWDI7YO2g1LLb06dWkn_xA3LnwYhdaKb5BT5-W9LKTTa037pyL8YcnebazS51_GqlzB7XCt35RUTEgDnUcgDreNyTmb1jK5HjqipsObLmUTuYKQIYb1sS43VaBj9FIDiEslD-hKqfZY0DG8evemOVz8DgQoIYgW6b9XCR1_JAixF7zBYLBRUzK5nvdpFQ3JXRZ-3N6MKPzLHcUS3D247SV-WwUklCUrkcYi1qnD3xpj9qR97KHT4l2MghMd92os5EE3-Qo">
+<div class="relative h-48">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Pure Shakar jaggery powder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUAHEWnnWDI7YO2g1LLb06dWkn_xA3LnwYhdaKb5BT5-W9LKTTa037pyL8YcnebazS51_GqlzB7XCt35RUTEgDnUcgDreNyTmb1jK5HjqipsObLmUTuYKQIYb1sS43VaBj9FIDiEslD-hKqfZY0DG8evemOVz8DgQoIYgW6b9XCR1_JAixF7zBYLBRUzK5nvdpFQ3JXRZ-3N6MKPzLHcUS3D247SV-WwUklCUrkcYi1qnD3xpj9qR97KHT4l2MghMd92os5EE3-Qo"/>
+</div>
+<div class="p-6 flex flex-col flex-grow justify-between">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2 text-[20px]">Pure Shakar</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mb-6">Finely powdered jaggery, perfect for daily use in tea, coffee, and traditional sweets.</p>
+</div>
+<button data-add-to-cart class="w-full bg-transparent border border-primary/30 text-primary hover:border-primary font-label-md text-label-md px-4 py-2 rounded transition-colors">Buy Now</button>
+</div>
+</div>
+
+<div class="md:col-span-4 bg-surface border border-primary/15 rounded-lg overflow-hidden group flex flex-col" data-category="khand" data-name="Desi Khand" data-price="220" data-image="https://lh3.googleusercontent.com/aida-public/AB6AXuBhPUWZ0zITxHRUgfdDySzcTiJd-qnUV5zzzR0Vdd5b7drOdWiA34n7rXLtIWQWYGI-f2Cx-pKzPfK4AW1N1zDK2T-B8nAr-wTqFx0aPNmQdOQLjGvOIe6nZfWvc7IEhiFNxVjRIq1Vv43AjUhZ8wq40nokBVpqMRSUiaFEZzMtiI15YlND9XsJqnUTW9aRIHTV5THz1892hOo6bsV_VUuv44TleM51MK0DSxH5326bEFD_eR4BQkVA-bxHqLhuA_XfI23DMnQoMjU">
+<div class="p-6 flex flex-col flex-grow justify-between order-2 md:order-1">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2 text-[20px]">Desi Khand</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mb-6">Unrefined muscovado sugar, retaining natural molasses for a rich, complex flavor profile.</p>
+</div>
+<button data-add-to-cart class="w-full bg-transparent border border-primary/30 text-primary hover:border-primary font-label-md text-label-md px-4 py-2 rounded transition-colors">Buy Now</button>
+</div>
+<div class="relative h-48 order-1 md:order-2">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Desi Khand raw sugar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhPUWZ0zITxHRUgfdDySzcTiJd-qnUV5zzzR0Vdd5b7drOdWiA34n7rXLtIWQWYGI-f2Cx-pKzPfK4AW1N1zDK2T-B8nAr-wTqFx0aPNmQdOQLjGvOIe6nZfWvc7IEhiFNxVjRIq1Vv43AjUhZ8wq40nokBVpqMRSUiaFEZzMtiI15YlND9XsJqnUTW9aRIHTV5THz1892hOo6bsV_VUuv44TleM51MK0DSxH5326bEFD_eR4BQkVA-bxHqLhuA_XfI23DMnQoMjU"/>
+</div>
+</div>
+
+<div class="md:col-span-8 bg-surface-container border border-primary/10 rounded-lg p-8 md:p-12 flex items-center justify-center text-center">
+<div>
+<span class="material-symbols-outlined text-secondary text-4xl mb-4 block" style="font-variation-settings: 'FILL' 1;">eco</span>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-3">Seasonal Batches</h4>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto">We produce in small batches aligned with the sugarcane harvest season to ensure maximum freshness and nutritional value.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Promise -->
+<section class="py-24 bg-surface-container-low border-y border-primary/10">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+<div class="order-2 md:order-1">
+<h2 class="font-headline-md text-headline-md text-primary mb-12">The UP Mithas Promise</h2>
+<div class="space-y-10">
+<div class="flex gap-6">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary">agriculture</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-[20px] font-semibold text-primary mb-2">Farm to Table</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Sourced directly from generational farmers in Uttar Pradesh, ensuring fair trade and single-origin purity.</p>
+</div>
+</div>
+<div class="flex gap-6">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary">local_fire_department</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-[20px] font-semibold text-primary mb-2">Traditional Process</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Boiled slowly in iron karahis over wood fires. We rely on time-honored techniques rather than industrial refinement.</p>
+</div>
+</div>
+<div class="flex gap-6">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary">block</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-[20px] font-semibold text-primary mb-2">Zero Additives</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">No chemical clarifiers, synthetic colors, or preservatives. Just 100% natural sugarcane juice, clarified using wild herbs.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="order-1 md:order-2 relative h-[500px] rounded-xl overflow-hidden border border-primary/10 p-2 bg-surface">
+<img class="w-full h-full object-cover rounded-lg" alt="Traditional jaggery making process over open fire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_z6q0i1XGm-ZTHsSxVgt_GmyuL9ajk0kUH2ClSs3xYeUpfaQfGeJ-GrCfyt3UuGFeCcx__M8prFq68HF2m5-yQM-6bSW487qYoCENXBkGWhZxeDRNoJ5NjkGbffsxxqEArtuCpaGAzpULZVl4EF162Y_0-etaRHGry3G_1f473Kq43XiRWX9_Q7LYj5FV-CC2TTQZtHsed4vAsR9pkfnLfizUVPbGgnJdzQWn7bCktutK3NiszmoRcfO2Ej1xUud78dYyLjg33gU"/>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Wholesale banner -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="relative rounded-2xl overflow-hidden bg-primary-container border border-primary/20 flex flex-col md:flex-row items-center justify-between p-10 md:p-16">
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute -left-10 -bottom-10 w-48 h-48 bg-tertiary-fixed-dim/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative z-10 md:w-2/3 mb-8 md:mb-0 text-center md:text-left">
+<h2 class="font-headline-md text-headline-md text-on-primary-container mb-4">Partner with UP Mithas</h2>
+<p class="font-body-md text-body-md text-on-primary-container/80 max-w-xl">Are you a retailer, baker, or culinary professional? We offer competitive pricing on bulk orders of our premium traditional sweeteners.</p>
+</div>
+<div class="relative z-10 md:w-1/3 flex justify-center md:justify-end">
+<a href="wholesale.html" class="bg-secondary hover:bg-secondary/90 text-on-secondary font-label-md text-label-md px-8 py-4 rounded transition-colors shadow-sm whitespace-nowrap">Request Wholesale Catalog</a>
+</div>
+</div>
+</section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-surface-container w-full mt-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter py-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="col-span-1 mb-8 md:mb-0">
+<a class="font-headline-sm text-headline-sm text-primary block mb-4" href="index.html">UP Mithas</a>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mb-6">Artisanal Traditional Sweeteners.</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs">© 2024 UP Mithas. All rights reserved.</p>
+</div>
+<div class="col-span-1 md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
+<div>
+<h5 class="font-label-md text-label-md text-on-surface mb-4 uppercase tracking-wider text-xs">Shop</h5>
+<ul class="space-y-3">
+<li><a class="text-on-surface-variant hover:text-secondary transition-colors font-body-md text-body-md text-sm block" href="shop.html">Retail Products</a></li>
+<li><a class="text-on-surface-variant hover:text-secondary transition-colors font-body-md text-body-md text-sm block" href="wholesale.html">Wholesale Inquiries</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-label-md text-label-md text-on-surface mb-4 uppercase tracking-wider text-xs">Company</h5>
+<ul class="space-y-3">
+<li><a class="text-on-surface-variant hover:text-secondary transition-colors font-body-md text-body-md text-sm block" href="heritage.html">About Our Farm</a></li>
+<li><a class="text-on-surface-variant hover:text-secondary transition-colors font-body-md text-body-md text-sm block" href="heritage.html">Sustainability</a></li>
+<li><a class="text-on-surface-variant hover:text-secondary transition-colors font-body-md text-body-md text-sm block" href="wholesale.html">Contact Us</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-label-md text-label-md text-on-surface mb-4 uppercase tracking-wider text-xs">Support</h5>
+<ul class="space-y-3">
+<li><a class="text-on-surface-variant hover:text-secondary transition-colors font-body-md text-body-md text-sm block" href="#">Shipping Policy</a></li>
+</ul>
+</div>
+</div>
+</div>
+</footer>
+
+<!-- Cart Drawer -->
+<div id="cart-overlay" class="hidden fixed inset-0 bg-black/40 z-40"></div>
+<div id="cart-drawer" class="translate-x-full fixed top-0 right-0 h-full w-full max-w-md bg-surface-bright z-50 flex flex-col shadow-2xl">
+<div class="flex items-center justify-between p-6 border-b border-primary/15">
+<h3 class="font-headline-sm text-headline-sm text-primary">Your Cart</h3>
+<button id="cart-close-btn" class="text-primary hover:opacity-70"><span class="material-symbols-outlined">close</span></button>
+</div>
+<div class="flex-grow overflow-y-auto px-6">
+<p id="cart-empty" class="text-on-surface-variant text-sm py-10 text-center">Your cart is empty. Start adding some sweetness!</p>
+<div id="cart-items"></div>
+</div>
+<div class="p-6 border-t border-primary/15">
+<div class="flex justify-between items-center mb-4">
+<span class="font-medium text-on-surface">Subtotal</span>
+<span id="cart-total" class="font-headline-sm text-headline-sm text-secondary">₹0</span>
+</div>
+<button id="checkout-btn" class="w-full bg-primary text-on-primary py-3 rounded hover:bg-primary/90 transition-colors font-label-md text-label-md uppercase tracking-wider">Checkout</button>
+</div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 bg-primary text-on-primary px-6 py-3 rounded shadow-lg z-50 text-sm font-medium"></div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
