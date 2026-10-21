@@ -1,0 +1,16 @@
+{
+  "name": "upmithas-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UP Mithas storefront API and Razorpay checkout",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "razorpay": "^2.9.8",
+    "sqlite3": "^6.0.1"
+  }
+}
