@@ -121,6 +121,8 @@
     }
 
     if (totalEl) totalEl.textContent = "\u20B9" + cartTotal();
+    var checkoutTotal = document.getElementById("checkout-total");
+    if (checkoutTotal) checkoutTotal.textContent = "\u20B9" + cartTotal();
   }
 
   function openCart() {
@@ -144,6 +146,171 @@
     }, 300);
   }
 
+  function showCartView() {
+    var cartView = document.getElementById("cart-view");
+    var checkoutForm = document.getElementById("checkout-form");
+    var title = document.getElementById("cart-title");
+    if (cartView) cartView.classList.remove("hidden");
+    if (checkoutForm) checkoutForm.classList.add("hidden");
+    if (title) title.textContent = "Your Cart";
+  }
+
+  function showCheckoutView() {
+    var cartView = document.getElementById("cart-view");
+    var checkoutForm = document.getElementById("checkout-form");
+    var title = document.getElementById("cart-title");
+    if (cartView) cartView.classList.add("hidden");
+    if (checkoutForm) checkoutForm.classList.remove("hidden");
+    if (title) title.textContent = "Checkout";
+  }
+
+  function initCheckout() {
+    var checkoutBtn = document.getElementById("checkout-btn");
+    var checkoutForm = document.getElementById("checkout-form");
+    var sameBilling = document.getElementById("same-billing-address");
+    var billingFields = document.getElementById("billing-address-fields");
+    var payBtn = document.getElementById("pay-btn");
+    if (!checkoutBtn || !checkoutForm || !sameBilling || !billingFields || !payBtn) return;
+
+    checkoutBtn.addEventListener("click", function () {
+      if (cartCount() === 0) {
+        showToast("Your cart is empty");
+        return;
+      }
+      showCheckoutView();
+    });
+
+    var backBtn = document.getElementById("back-to-cart");
+    if (backBtn) backBtn.addEventListener("click", showCartView);
+
+    function updateBillingFields() {
+      var inputs = billingFields.querySelectorAll("input, textarea");
+      billingFields.classList.toggle("hidden", sameBilling.checked);
+      inputs.forEach(function (input) {
+        input.required = !sameBilling.checked;
+      });
+    }
+
+    sameBilling.addEventListener("change", updateBillingFields);
+    updateBillingFields();
+
+    checkoutForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (cartCount() === 0) {
+        showToast("Your cart is empty");
+        showCartView();
+        return;
+      }
+      if (typeof window.Razorpay !== "function") {
+        showToast("Payment service is unavailable. Please try again later.");
+        return;
+      }
+
+      var formData = new FormData(checkoutForm);
+      var deliveryAddress = {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        address: formData.get("address"),
+        city: formData.get("city"),
+        state: formData.get("state"),
+        postalCode: formData.get("postalCode"),
+      };
+      var billingAddress = sameBilling.checked
+        ? deliveryAddress
+        : {
+            name: deliveryAddress.name,
+            email: deliveryAddress.email,
+            phone: deliveryAddress.phone,
+            address: formData.get("billingAddress"),
+            city: formData.get("billingCity"),
+            state: formData.get("billingState"),
+            postalCode: formData.get("billingPostalCode"),
+          };
+
+      payBtn.disabled = true;
+      payBtn.textContent = "Preparing secure payment...";
+
+      fetch("/api/orders/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: getCart().map(function (item) {
+            return { name: item.name, size: item.size, qty: item.qty };
+          }),
+          deliveryAddress: deliveryAddress,
+          billingAddress: billingAddress,
+        }),
+      })
+        .then(function (response) {
+          return response.json().then(function (data) {
+            if (!response.ok) throw new Error(data.error || "Could not start checkout.");
+            return data;
+          });
+        })
+        .then(function (order) {
+          var payment = new window.Razorpay({
+            key: order.keyId,
+            amount: order.amount,
+            currency: order.currency,
+            name: "UP Mithas",
+            description: "Your UP Mithas order",
+            order_id: order.orderId,
+            prefill: {
+              name: deliveryAddress.name,
+              email: deliveryAddress.email,
+              contact: deliveryAddress.phone,
+            },
+            theme: { color: "#421904" },
+            handler: function (paymentResponse) {
+              fetch("/api/orders/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  orderId: order.orderId,
+                  paymentId: paymentResponse.razorpay_payment_id,
+                  signature: paymentResponse.razorpay_signature,
+                }),
+              })
+                .then(function (response) {
+                  return response.json().then(function (data) {
+                    if (!response.ok) throw new Error(data.error || "Payment verification failed.");
+                    return data;
+                  });
+                })
+                .then(function () {
+                  saveCart([]);
+                  checkoutForm.reset();
+                  updateBillingFields();
+                  showCartView();
+                  closeCart();
+                  showToast("Payment successful. Your order has been placed.");
+                })
+                .catch(function (error) {
+                  showToast(error.message || "Payment verification failed. Contact support before retrying.");
+                });
+            },
+            modal: {
+              ondismiss: function () {
+                showToast("Payment was not completed. Your cart is saved.");
+              },
+            },
+          });
+          payment.on("payment.failed", function () {
+            showToast("Payment failed. Your cart is saved; please try again.");
+          });
+          payment.open();
+        })
+        .catch(function (error) {
+          showToast(error.message || "Could not start checkout. Please try again.");
+        })
+        .finally(function () {
+          payBtn.disabled = false;
+          payBtn.textContent = "Continue to payment";
+        });
+    });
+  }
+
   /* ---------- Toast ---------- */
   var toastTimer;
   function showToast(message) {
@@ -162,7 +329,7 @@
     var grid = document.getElementById("product-grid"); 
     if (!grid) return;
 
-    fetch("http://localhost:3000/api/products")
+    fetch("/api/products")
       .then(function(res) { return res.json(); })
       .then(function(data) {
         console.log("Products loaded from DB:", data.products);
@@ -296,7 +463,7 @@
       var submitBtn = form.querySelector("button[type='submit']");
       if (submitBtn) submitBtn.disabled = true;
 
-      fetch("http://localhost:3000/api/wholesale", {
+      fetch("/api/wholesale", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -363,67 +530,6 @@
       if (rem) removeFromCart(parseInt(rem.getAttribute("data-remove"), 10));
     });
 
-    var checkoutBtn = document.getElementById("checkout-btn");
-    if (checkoutBtn) {
-      checkoutBtn.addEventListener("click", function () {
-        if (cartCount() === 0) {
-          showToast("Your cart is empty");
-          return;
-        }
-        
-        var amount = cartTotal();
-        var originalText = checkoutBtn.textContent;
-        checkoutBtn.disabled = true;
-        checkoutBtn.textContent = "Processing...";
-
-        fetch("http://localhost:3000/api/orders/create", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ amount: amount })
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(order) {
-            var options = {
-                key: "YOUR_TEST_KEY_ID", 
-                amount: order.amount,
-                currency: order.currency,
-                name: "UP Mithas",
-                description: "Cart Checkout",
-                order_id: order.id,
-                handler: function (response) {
-                    fetch("http://localhost:3000/api/orders/verify", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(response)
-                    })
-                    .then(function(res) { return res.json(); })
-                    .then(function(verifyResult) {
-                        if(verifyResult.success) {
-                            showToast("Thank you! Your order has been placed.");
-                            saveCart([]); 
-                            closeCart();  
-                        } else {
-                            showToast("Payment verification failed.");
-                        }
-                    });
-                },
-                theme: { color: "#d97706" } 
-            };
-            var rzp = new window.Razorpay(options);
-            rzp.open();
-            
-            rzp.on('payment.failed', function (response){
-                showToast("Payment failed. Please try again.");
-            });
-        })
-        .catch(function(err) {
-            showToast("Server error during checkout.");
-        })
-        .finally(function() {
-            checkoutBtn.disabled = false;
-            checkoutBtn.textContent = originalText;
-        });
-      });
-    }
+    initCheckout();
   });
 })();

@@ -55,7 +55,7 @@
     }
   }
 </script>
-<link rel="stylesheet" href="css/custom.css"/>
+<link rel="stylesheet" href="custom.css"/>
 </head>
 <body class="bg-background text-on-background font-body-md antialiased relative">
 <div class="fixed inset-0 texture-overlay z-40 pointer-events-none"></div>
@@ -179,9 +179,10 @@
 <div id="cart-overlay" class="hidden fixed inset-0 bg-black/40 z-40"></div>
 <div id="cart-drawer" class="translate-x-full fixed top-0 right-0 h-full w-full max-w-md bg-surface-bright z-50 flex flex-col shadow-2xl">
 <div class="flex items-center justify-between p-6 border-b border-primary/15">
-<h3 class="font-headline-sm text-headline-sm text-primary">Your Cart</h3>
+<h3 id="cart-title" class="font-headline-sm text-headline-sm text-primary">Your Cart</h3>
 <button id="cart-close-btn" class="text-primary hover:opacity-70"><span class="material-symbols-outlined">close</span></button>
 </div>
+<div id="cart-view" class="flex flex-col flex-grow min-h-0">
 <div class="flex-grow overflow-y-auto px-6">
 <p id="cart-empty" class="text-on-surface-variant text-sm py-10 text-center">Your cart is empty. Start adding some sweetness!</p>
 <div id="cart-items"></div>
@@ -194,10 +195,67 @@
 <button id="checkout-btn" class="w-full bg-primary text-on-primary py-3 rounded hover:bg-primary/90 transition-colors font-label-md text-label-md uppercase tracking-wider">Checkout</button>
 </div>
 </div>
+<form id="checkout-form" class="hidden flex-grow overflow-y-auto p-6 space-y-4">
+<h4 class="font-headline-sm text-primary">Delivery details</h4>
+<label class="block text-sm font-medium text-on-surface">Full name
+<input name="name" autocomplete="name" required maxlength="100" class="mt-1 w-full rounded border border-outline/50 p-3" />
+</label>
+<label class="block text-sm font-medium text-on-surface">Email
+<input name="email" type="email" autocomplete="email" required maxlength="254" class="mt-1 w-full rounded border border-outline/50 p-3" />
+</label>
+<label class="block text-sm font-medium text-on-surface">Phone number
+<input name="phone" type="tel" autocomplete="tel" inputmode="tel" required class="mt-1 w-full rounded border border-outline/50 p-3" />
+</label>
+<label class="block text-sm font-medium text-on-surface">Address
+<textarea name="address" autocomplete="street-address" required maxlength="250" rows="2" class="mt-1 w-full rounded border border-outline/50 p-3"></textarea>
+</label>
+<div class="grid grid-cols-2 gap-3">
+<label class="block text-sm font-medium text-on-surface">City
+<input name="city" autocomplete="address-level2" required maxlength="100" class="mt-1 w-full rounded border border-outline/50 p-3" />
+</label>
+<label class="block text-sm font-medium text-on-surface">State
+<input name="state" autocomplete="address-level1" required maxlength="100" class="mt-1 w-full rounded border border-outline/50 p-3" />
+</label>
+</div>
+<label class="block text-sm font-medium text-on-surface">PIN code
+<input name="postalCode" autocomplete="postal-code" inputmode="numeric" pattern="[0-9]{6}" required class="mt-1 w-full rounded border border-outline/50 p-3" />
+</label>
+<label class="flex items-center gap-2 text-sm text-on-surface">
+<input id="same-billing-address" type="checkbox" checked class="rounded border-outline text-primary focus:ring-primary" />
+Billing address is the same as delivery
+</label>
+<div id="billing-address-fields" class="hidden space-y-4">
+<h4 class="font-headline-sm text-primary">Billing address</h4>
+<label class="block text-sm font-medium text-on-surface">Address
+<textarea name="billingAddress" maxlength="250" rows="2" class="mt-1 w-full rounded border border-outline/50 p-3"></textarea>
+</label>
+<div class="grid grid-cols-2 gap-3">
+<label class="block text-sm font-medium text-on-surface">City
+<input name="billingCity" maxlength="100" class="mt-1 w-full rounded border border-outline/50 p-3" />
+</label>
+<label class="block text-sm font-medium text-on-surface">State
+<input name="billingState" maxlength="100" class="mt-1 w-full rounded border border-outline/50 p-3" />
+</label>
+</div>
+<label class="block text-sm font-medium text-on-surface">PIN code
+<input name="billingPostalCode" inputmode="numeric" pattern="[0-9]{6}" class="mt-1 w-full rounded border border-outline/50 p-3" />
+</label>
+</div>
+<div class="flex justify-between border-t border-primary/15 pt-4 font-medium text-on-surface">
+<span>Order total</span>
+<span id="checkout-total" class="text-secondary">₹0</span>
+</div>
+<div class="sticky bottom-0 space-y-3 bg-surface-bright pt-3">
+<button type="submit" id="pay-btn" class="w-full bg-primary text-on-primary py-3 rounded hover:bg-primary/90 transition-colors font-label-md text-label-md uppercase tracking-wider">Continue to payment</button>
+<button type="button" id="back-to-cart" class="w-full border border-primary/30 text-primary py-3 rounded font-label-md text-label-md">Back to cart</button>
+</div>
+</form>
+</div>
 
 <!-- Toast -->
 <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-24 opacity-0 bg-primary text-on-primary px-6 py-3 rounded shadow-lg z-50 text-sm font-medium"></div>
 
-<script src="js/main.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
