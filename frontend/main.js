@@ -172,6 +172,100 @@
     var payBtn = document.getElementById("pay-btn");
     if (!checkoutBtn || !checkoutForm || !sameBilling || !billingFields || !payBtn) return;
 
+    function setupPostalLookup(postalInput, cityInput, stateInput, cityList, status) {
+      var timer;
+      var controller;
+      var lastAutofilledCity = "";
+      var lastAutofilledState = "";
+
+      postalInput.addEventListener("input", function () {
+        window.clearTimeout(timer);
+        if (controller) controller.abort();
+        var postalCode = postalInput.value.trim();
+
+        if (lastAutofilledCity && cityInput.value === lastAutofilledCity) cityInput.value = "";
+        if (lastAutofilledState && stateInput.value === lastAutofilledState) stateInput.value = "";
+        lastAutofilledCity = "";
+        lastAutofilledState = "";
+        cityList.replaceChildren();
+        status.textContent = "";
+
+        if (!/^[0-9]{6}$/.test(postalCode)) return;
+
+        status.textContent = "Looking up PIN code...";
+        timer = window.setTimeout(function () {
+          controller = new AbortController();
+          fetch("/api/postal-codes/" + postalCode, { signal: controller.signal })
+            .then(function (response) {
+              return response.json().then(function (body) {
+                if (!response.ok) throw new Error(body.error || "Could not look up this PIN code.");
+                return body;
+              });
+            })
+            .then(function (body) {
+              if (postalInput.value.trim() !== postalCode) return;
+              var locations = body.locations;
+              if (!Array.isArray(locations) || locations.length === 0) {
+                throw new Error("No matching postal areas were found.");
+              }
+              var cities = Array.from(new Set(locations.map(function (location) {
+                return location.city;
+              }).filter(Boolean)));
+              var states = Array.from(new Set(locations.map(function (location) {
+                return location.state;
+              }).filter(Boolean)));
+              cities.forEach(function (city) {
+                var option = document.createElement("option");
+                option.value = city;
+                cityList.appendChild(option);
+              });
+              if (cities.length === 1) {
+                cityInput.value = cities[0];
+                lastAutofilledCity = cities[0];
+              }
+              var availableStates = Array.from(stateInput.options).map(function (option) {
+                return option.value;
+              });
+              var matchingStates = states.filter(function (state) {
+                return availableStates.includes(state);
+              });
+              if (matchingStates.length === 1) {
+                stateInput.value = matchingStates[0];
+                lastAutofilledState = matchingStates[0];
+              }
+              if (cities.length > 1) {
+                status.textContent = "Choose a city or district from the suggestions.";
+              } else if (matchingStates.length > 1) {
+                status.textContent = "Choose the matching state / UT.";
+              } else if (matchingStates.length === 0) {
+                status.textContent = "Choose the matching state / UT from the list.";
+              } else {
+                status.textContent = "City and state filled from this PIN code. You can edit them.";
+              }
+            })
+            .catch(function (error) {
+              if (error.name === "AbortError" || postalInput.value.trim() !== postalCode) return;
+              status.textContent = error.message + " Enter the city and state / UT manually.";
+            });
+        }, 300);
+      });
+    }
+
+    setupPostalLookup(
+      checkoutForm.elements.postalCode,
+      checkoutForm.elements.city,
+      checkoutForm.elements.state,
+      document.getElementById("checkout-cities"),
+      document.getElementById("postal-code-status")
+    );
+    setupPostalLookup(
+      checkoutForm.elements.billingPostalCode,
+      checkoutForm.elements.billingCity,
+      checkoutForm.elements.billingState,
+      document.getElementById("billing-cities"),
+      document.getElementById("billing-postal-code-status")
+    );
+
     checkoutBtn.addEventListener("click", function () {
       if (cartCount() === 0) {
         showToast("Your cart is empty");
@@ -184,7 +278,7 @@
     if (backBtn) backBtn.addEventListener("click", showCartView);
 
     function updateBillingFields() {
-      var inputs = billingFields.querySelectorAll("input, textarea");
+      var inputs = billingFields.querySelectorAll("input, textarea, select");
       billingFields.classList.toggle("hidden", sameBilling.checked);
       inputs.forEach(function (input) {
         input.required = !sameBilling.checked;

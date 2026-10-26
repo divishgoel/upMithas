@@ -154,6 +154,53 @@ app.get("/api/products", function (_request, response) {
   });
 });
 
+app.get("/api/postal-codes/:postalCode", async function (request, response) {
+  const postalCode = request.params.postalCode;
+  if (!/^[0-9]{6}$/.test(postalCode)) {
+    return response.status(400).json({ error: "Please provide a valid 6-digit PIN code." });
+  }
+
+  try {
+    const upstreamResponse = await fetch(
+      "https://api.postalpincode.in/pincode/" + postalCode,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    if (!upstreamResponse.ok) {
+      throw new Error("Postal lookup service returned HTTP " + upstreamResponse.status + ".");
+    }
+    const results = await upstreamResponse.json();
+    const postOffices = results[0] && results[0].Status === "Success" && results[0].PostOffice;
+    if (!Array.isArray(postOffices) || postOffices.length === 0) {
+      return response.status(404).json({ error: "No matching postal areas were found." });
+    }
+
+    const stateAliases = {
+      "Andaman & Nicobar Islands": "Andaman and Nicobar Islands",
+      "Dadra & Nagar Haveli": "Dadra and Nagar Haveli and Daman and Diu",
+      "Daman & Diu": "Dadra and Nagar Haveli and Daman and Diu",
+      "Jammu & Kashmir": "Jammu and Kashmir",
+      "Orissa": "Odisha",
+      "Pondicherry": "Puducherry",
+      "Uttaranchal": "Uttarakhand",
+    };
+    const locationsByKey = new Map();
+    postOffices.forEach(function (office) {
+      const city = office.Block || office.District || office.Name;
+      const state = stateAliases[office.State] || office.State;
+      if (typeof city !== "string" || typeof state !== "string" || !city.trim() || !state.trim()) return;
+      locationsByKey.set(city + "\u0000" + state, { city: city, state: state });
+    });
+    const locations = Array.from(locationsByKey.values());
+    if (locations.length === 0) {
+      return response.status(404).json({ error: "No matching postal areas were found." });
+    }
+    response.json({ locations: locations });
+  } catch (error) {
+    console.error("Could not look up PIN code:", error.message);
+    response.status(502).json({ error: "PIN code lookup is temporarily unavailable." });
+  }
+});
+
 app.post("/api/wholesale", async function (request, response) {
   try {
     const body = request.body;

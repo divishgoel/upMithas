@@ -12,6 +12,9 @@ and SQLite checkout-order database live in `backend/`.
 
 The checkout validates product prices on the server and stores pending and paid
 orders, including delivery and billing addresses, in `backend/data/orders.db`.
+Entering a six-digit Indian PIN code looks up its city/district and state / UT;
+the results remain editable, and the state / UT can also be selected manually.
+The backend retrieves city/district suggestions from `api.postalpincode.in`.
 The order total currently reflects product prices only; shipping fees are not
 configured. Use Razorpay test credentials while validating the integration and
 deploy over HTTPS before accepting live payments. Do not commit `.env` or the
