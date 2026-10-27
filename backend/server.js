@@ -6,6 +6,7 @@ require("dotenv").config({ path: path.join(__dirname, ".env") });
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const Razorpay = require("razorpay");
+const { OAuth2Client } = require("google-auth-library");
 
 const app = express();
 const frontendDirectory = path.join(__dirname, "..", "frontend");
@@ -13,14 +14,13 @@ const databasePath = path.resolve(__dirname, process.env.DATABASE_PATH || "data/
 fs.mkdirSync(path.dirname(databasePath), { recursive: true });
 
 const db = new sqlite3.Database(databasePath);
+const googleOAuthClient = new OAuth2Client();
+const sessionCookieName = "upmithas_session";
+const sessionDurationSeconds = 30 * 24 * 60 * 60;
 const products = [
-  { name: "Classic Gud Blocks", category: "gud", prices: { "500g": 250, "1kg": 450 } },
-  { name: "Pure Shakar Powder", category: "shakar", prices: { "500g": 180, "1kg": 330 } },
-  { name: "Artisanal Desi Khand", category: "khand", prices: { "500g": 220, "1kg": 400 } },
-  { name: "Herbal Nut Jaggery", category: "gud", prices: { "250g": 300, "500g": 560 } },
-  { name: "Artisanal Gud (Jaggery)", category: "gud", prices: { "": 250 } },
-  { name: "Pure Shakar", category: "shakar", prices: { "": 180 } },
-  { name: "Desi Khand", category: "khand", prices: { "": 220 } },
+  { name: "Classic Gud Blocks", category: "gud", prices: { "1kg": 160, "": 160 } },
+  { name: "Pure Shakar Powder", category: "shakar", prices: { "1kg": 160, "": 160 } },
+  { name: "Desi Khand", category: "khand", prices: { "1kg": 160, "": 160 } },
 ];
 const productPrices = new Map();
 products.forEach(function (product) {
@@ -52,6 +52,102 @@ function get(sql, params) {
       else resolve(row);
     });
   });
+}
+
+function all(sql, params) {
+  return new Promise(function (resolve, reject) {
+    db.all(sql, params, function (error, rows) {
+      if (error) reject(error);
+      else resolve(rows);
+    });
+  });
+}
+
+function passwordHash(password, salt) {
+  return new Promise(function (resolve, reject) {
+    crypto.scrypt(password, salt, 64, function (error, derivedKey) {
+      if (error) reject(error);
+      else resolve(derivedKey);
+    });
+  });
+}
+
+function normalizeEmail(email) {
+  if (typeof email !== "string") throw new RequestError("Please provide a valid email address.");
+  const normalized = email.trim().toLowerCase();
+  if (normalized.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) {
+    throw new RequestError("Please provide a valid email address.");
+  }
+  return normalized;
+}
+
+function publicUser(user) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone || "",
+    address: user.address || "",
+    city: user.city || "",
+    state: user.state || "",
+    postalCode: user.postal_code || "",
+  };
+}
+
+function parseCookies(header) {
+  const cookies = {};
+  (header || "").split(";").forEach(function (part) {
+    const separator = part.indexOf("=");
+    if (separator < 0) return;
+    const name = part.slice(0, separator).trim();
+    if (name) cookies[name] = part.slice(separator + 1).trim();
+  });
+  return cookies;
+}
+
+async function createSession(response, userId) {
+  const token = crypto.randomBytes(32).toString("base64url");
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  const expiresAt = new Date(Date.now() + sessionDurationSeconds * 1000)
+    .toISOString()
+    .slice(0, 19)
+    .replace("T", " ");
+  await run("INSERT INTO auth_sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)", [
+    tokenHash,
+    userId,
+    expiresAt,
+  ]);
+  const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+  response.setHeader(
+    "Set-Cookie",
+    sessionCookieName + "=" + token + "; Max-Age=" + sessionDurationSeconds + "; Path=/; HttpOnly; SameSite=Lax" + secure
+  );
+}
+
+async function authenticate(request, response, next) {
+  try {
+    const token = parseCookies(request.headers.cookie)[sessionCookieName];
+    if (token && /^[A-Za-z0-9_-]{40,50}$/.test(token)) {
+      const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+      request.user = await get(
+        `SELECT users.* FROM auth_sessions
+         JOIN users ON users.id = auth_sessions.user_id
+         WHERE auth_sessions.token_hash = ? AND auth_sessions.expires_at > CURRENT_TIMESTAMP`,
+        [tokenHash]
+      );
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+function requireAuth(request, response) {
+  if (!request.user) {
+    response.status(401).json({ error: "Please sign in to continue." });
+    return false;
+  }
+  return true;
 }
 
 function requireText(value, label, maxLength) {
@@ -139,6 +235,203 @@ function validPaymentSignature(keySecret, orderId, paymentId, signature) {
 }
 
 app.use(express.json({ limit: "16kb" }));
+
+app.get("/api/auth/config", function (_request, response) {
+  response.json({ googleClientId: process.env.GOOGLE_CLIENT_ID || "" });
+});
+
+app.get("/api/auth/me", authenticate, function (request, response) {
+  response.json({ user: request.user ? publicUser(request.user) : null });
+});
+
+app.post("/api/auth/signup", async function (request, response) {
+  try {
+    const body = request.body;
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      throw new RequestError("Please provide your name, email, and password.");
+    }
+    const name = requireText(body.name, "name", 100);
+    const email = normalizeEmail(body.email);
+    if (typeof body.password !== "string" || body.password.length < 10 || body.password.length > 128) {
+      throw new RequestError("Password must be between 10 and 128 characters.");
+    }
+    const existing = await get("SELECT id FROM users WHERE email = ?", [email]);
+    if (existing) return response.status(409).json({ error: "An account with this email already exists." });
+
+    const salt = crypto.randomBytes(16);
+    const hash = await passwordHash(body.password, salt);
+    const result = await run(
+      "INSERT INTO users (name, email, password_salt, password_hash) VALUES (?, ?, ?, ?)",
+      [name, email, salt.toString("hex"), hash.toString("hex")]
+    );
+    const user = await get("SELECT * FROM users WHERE id = ?", [result.lastID]);
+    await createSession(response, user.id);
+    response.status(201).json({ user: publicUser(user) });
+  } catch (error) {
+    if (error instanceof RequestError) return response.status(error.status).json({ error: error.message });
+    console.error("Could not create customer account:", error.message);
+    response.status(500).json({ error: "Could not create your account. Please try again." });
+  }
+});
+
+app.post("/api/auth/login", async function (request, response) {
+  try {
+    const body = request.body;
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      throw new RequestError("Please enter your email and password.");
+    }
+    const email = normalizeEmail(body.email);
+    if (typeof body.password !== "string" || body.password.length > 128) {
+      throw new RequestError("Email or password is incorrect.");
+    }
+    const user = await get("SELECT * FROM users WHERE email = ?", [email]);
+    if (!user || !user.password_salt || !user.password_hash) {
+      return response.status(401).json({ error: "Email or password is incorrect." });
+    }
+    const hash = await passwordHash(body.password, Buffer.from(user.password_salt, "hex"));
+    const expectedHash = Buffer.from(user.password_hash, "hex");
+    if (hash.length !== expectedHash.length || !crypto.timingSafeEqual(hash, expectedHash)) {
+      return response.status(401).json({ error: "Email or password is incorrect." });
+    }
+    await createSession(response, user.id);
+    response.json({ user: publicUser(user) });
+  } catch (error) {
+    if (error instanceof RequestError) return response.status(error.status).json({ error: error.message });
+    console.error("Could not sign in customer:", error.message);
+    response.status(500).json({ error: "Could not sign in. Please try again." });
+  }
+});
+
+app.post("/api/auth/google", async function (request, response) {
+  try {
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const credential = request.body && request.body.credential;
+    if (!clientId) return response.status(503).json({ error: "Google sign-in is not configured yet." });
+    if (typeof credential !== "string" || credential.length > 10000) {
+      throw new RequestError("Google sign-in could not be completed.");
+    }
+
+    let ticket;
+    try {
+      ticket = await googleOAuthClient.verifyIdToken({ idToken: credential, audience: clientId });
+    } catch (_verificationError) {
+      return response.status(401).json({ error: "Google sign-in could not be verified. Please try again." });
+    }
+    const claims = ticket.getPayload();
+    if (!claims || typeof claims.sub !== "string" || claims.email_verified !== true) {
+      return response.status(401).json({ error: "Google could not verify this email address." });
+    }
+    const email = normalizeEmail(claims.email);
+    const name = typeof claims.name === "string" && claims.name.trim()
+      ? claims.name.trim().slice(0, 100)
+      : email.slice(0, 100);
+    let user = await get("SELECT * FROM users WHERE google_sub = ?", [claims.sub]);
+    if (!user) {
+      user = await get("SELECT * FROM users WHERE email = ?", [email]);
+      if (user && user.google_sub && user.google_sub !== claims.sub) {
+        return response.status(409).json({ error: "This email is already linked to another Google account." });
+      }
+      if (user) {
+        await run("UPDATE users SET google_sub = ? WHERE id = ?", [claims.sub, user.id]);
+        user = await get("SELECT * FROM users WHERE id = ?", [user.id]);
+      } else {
+        const result = await run(
+          "INSERT INTO users (name, email, google_sub) VALUES (?, ?, ?)",
+          [name, email, claims.sub]
+        );
+        user = await get("SELECT * FROM users WHERE id = ?", [result.lastID]);
+      }
+    }
+    await createSession(response, user.id);
+    response.json({ user: publicUser(user) });
+  } catch (error) {
+    if (error instanceof RequestError) return response.status(error.status).json({ error: error.message });
+    console.error("Could not sign in with Google:", error.message);
+    response.status(500).json({ error: "Could not sign in with Google. Please try again." });
+  }
+});
+
+app.post("/api/auth/logout", async function (request, response) {
+  try {
+    const token = parseCookies(request.headers.cookie)[sessionCookieName];
+    if (token && /^[A-Za-z0-9_-]{40,50}$/.test(token)) {
+      const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+      await run("DELETE FROM auth_sessions WHERE token_hash = ?", [tokenHash]);
+    }
+    response.setHeader(
+      "Set-Cookie",
+      sessionCookieName + "=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax" +
+        (process.env.NODE_ENV === "production" ? "; Secure" : "")
+    );
+    response.json({ success: true });
+  } catch (error) {
+    console.error("Could not sign out customer:", error.message);
+    response.status(500).json({ error: "Could not sign out. Please try again." });
+  }
+});
+
+app.put("/api/auth/profile", authenticate, async function (request, response) {
+  try {
+    if (!requireAuth(request, response)) return;
+    const body = request.body;
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      throw new RequestError("Please provide valid profile details.");
+    }
+    const name = requireText(body.name, "name", 100);
+    const phone = typeof body.phone === "string" ? body.phone.trim() : "";
+    const address = typeof body.address === "string" ? body.address.trim() : "";
+    const city = typeof body.city === "string" ? body.city.trim() : "";
+    const state = typeof body.state === "string" ? body.state.trim() : "";
+    const postalCode = typeof body.postalCode === "string" ? body.postalCode.trim() : "";
+    if (phone && !/^\+?[0-9 ()-]{10,16}$/.test(phone)) {
+      throw new RequestError("Please provide a valid phone number.");
+    }
+    if (address.length > 250 || city.length > 100 || state.length > 100) {
+      throw new RequestError("One or more profile fields are too long.");
+    }
+    if (postalCode && !/^[0-9]{6}$/.test(postalCode)) {
+      throw new RequestError("Please provide a valid 6-digit PIN code.");
+    }
+    await run(
+      `UPDATE users SET name = ?, phone = ?, address = ?, city = ?, state = ?, postal_code = ?
+       WHERE id = ?`,
+      [name, phone, address, city, state, postalCode, request.user.id]
+    );
+    const user = await get("SELECT * FROM users WHERE id = ?", [request.user.id]);
+    response.json({ user: publicUser(user) });
+  } catch (error) {
+    if (error instanceof RequestError) return response.status(error.status).json({ error: error.message });
+    console.error("Could not update customer profile:", error.message);
+    response.status(500).json({ error: "Could not save your profile. Please try again." });
+  }
+});
+
+app.get("/api/account/orders", authenticate, async function (request, response) {
+  try {
+    if (!requireAuth(request, response)) return;
+    const rows = await all(
+      `SELECT razorpay_order_id, amount_paise, currency, status, items, created_at, paid_at
+       FROM checkout_orders WHERE user_id = ? ORDER BY id DESC`,
+      [request.user.id]
+    );
+    response.json({
+      orders: rows.map(function (order) {
+        return {
+          orderId: order.razorpay_order_id,
+          amount: order.amount_paise,
+          currency: order.currency,
+          status: order.status,
+          items: JSON.parse(order.items),
+          createdAt: order.created_at,
+          paidAt: order.paid_at,
+        };
+      }),
+    });
+  } catch (error) {
+    console.error("Could not load customer orders:", error.message);
+    response.status(500).json({ error: "Could not load your orders. Please try again." });
+  }
+});
 
 app.get("/api/products", function (_request, response) {
   response.json({
@@ -238,7 +531,7 @@ app.post("/api/wholesale", async function (request, response) {
   }
 });
 
-app.post("/api/orders/create", async function (request, response) {
+app.post("/api/orders/create", authenticate, async function (request, response) {
   try {
     if (!request.body || typeof request.body !== "object" || Array.isArray(request.body)) {
       throw new RequestError("Invalid checkout details.");
@@ -259,11 +552,12 @@ app.post("/api/orders/create", async function (request, response) {
 
     await run(
       `INSERT INTO checkout_orders (
-        razorpay_order_id, amount_paise, currency, status, items,
+        razorpay_order_id, user_id, amount_paise, currency, status, items,
         delivery_address, billing_address
-      ) VALUES (?, ?, ?, 'created', ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, 'created', ?, ?, ?)`,
       [
         providerOrder.id,
+        request.user ? request.user.id : null,
         cart.amountPaise,
         "INR",
         JSON.stringify(cart.items),
@@ -338,6 +632,28 @@ app.post("/api/orders/verify", async function (request, response) {
 app.use(express.static(frontendDirectory));
 
 const schema = `
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE COLLATE NOCASE,
+    password_salt TEXT,
+    password_hash TEXT,
+    google_sub TEXT UNIQUE,
+    phone TEXT NOT NULL DEFAULT '',
+    address TEXT NOT NULL DEFAULT '',
+    city TEXT NOT NULL DEFAULT '',
+    state TEXT NOT NULL DEFAULT '',
+    postal_code TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS auth_sessions (
+    token_hash TEXT PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
+
   CREATE TABLE IF NOT EXISTS wholesale_leads (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -352,6 +668,7 @@ const schema = `
   CREATE TABLE IF NOT EXISTS checkout_orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     razorpay_order_id TEXT NOT NULL UNIQUE,
+    user_id INTEGER REFERENCES users(id),
     amount_paise INTEGER NOT NULL,
     currency TEXT NOT NULL,
     status TEXT NOT NULL CHECK (status IN ('created', 'paid')),
@@ -366,13 +683,49 @@ const schema = `
 
 db.exec(schema, function (error) {
   if (error) {
-    console.error("Could not initialize the checkout database:", error.message);
+    console.error("Could not initialize the application database:", error.message);
     process.exitCode = 1;
     db.close();
     return;
   }
-  const port = Number(process.env.PORT) || 3000;
-  app.listen(port, function () {
-    console.log("UP Mithas is available at http://localhost:" + port);
+
+  db.all("PRAGMA table_info(checkout_orders)", function (columnError, columns) {
+    if (columnError) {
+      console.error("Could not inspect the checkout database:", columnError.message);
+      process.exitCode = 1;
+      db.close();
+      return;
+    }
+
+    const hasUserId = columns.some(function (column) {
+      return column.name === "user_id";
+    });
+    const migration = hasUserId
+      ? function (callback) { callback(null); }
+      : function (callback) {
+          db.run("ALTER TABLE checkout_orders ADD COLUMN user_id INTEGER REFERENCES users(id)", callback);
+        };
+    migration(function (migrationError) {
+      if (migrationError) {
+        console.error("Could not add customer account support to the checkout database:", migrationError.message);
+        process.exitCode = 1;
+        db.close();
+        return;
+      }
+
+      db.run("CREATE INDEX IF NOT EXISTS checkout_orders_user_id ON checkout_orders(user_id)", function (indexError) {
+        if (indexError) {
+          console.error("Could not index customer orders:", indexError.message);
+          process.exitCode = 1;
+          db.close();
+          return;
+        }
+        db.run("DELETE FROM auth_sessions WHERE expires_at <= CURRENT_TIMESTAMP");
+        const port = Number(process.env.PORT) || 3000;
+        app.listen(port, function () {
+          console.log("UP Mithas is available at http://localhost:" + port);
+        });
+      });
+    });
   });
 });

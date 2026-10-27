@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Your Account - UP Mithas</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          background: "#fdf9f4",
+          primary: "#421904",
+          secondary: "#875300",
+          outline: "#85736d",
+          error: "#ba1a1a",
+          "on-surface-variant": "#52443e",
+          "surface-container-low": "#f7f3ee"
+        },
+        fontFamily: {
+          "body-md": ["Work Sans"],
+          "headline-md": ['"Source Serif 4"'],
+          "headline-sm": ['"Source Serif 4"']
+        },
+        fontSize: {
+          "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+          "headline-md": ["32px", { lineHeight: "40px", fontWeight: "600" }],
+          "headline-sm": ["24px", { lineHeight: "32px", fontWeight: "600" }]
+        }
+      }
+    }
+  };
+</script>
+<link rel="stylesheet" href="custom.css"/>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+<header class="bg-background border-b border-primary/15">
+  <nav class="max-w-5xl mx-auto flex items-center justify-between px-4 py-5">
+    <a class="font-headline-md text-2xl text-primary" href="index.html">UP Mithas</a>
+    <a class="text-primary hover:text-secondary" href="shop.html">Continue shopping</a>
+  </nav>
+</header>
+<main class="flex-grow max-w-5xl w-full mx-auto px-4 py-10 md:py-16">
+  <section id="auth-view" class="max-w-xl mx-auto bg-white rounded-xl border border-primary/10 shadow-sm p-6 md:p-10">
+    <p class="text-secondary uppercase tracking-widest text-xs font-semibold mb-2">Customer account</p>
+    <h1 id="auth-title" class="font-headline-md text-3xl text-primary mb-2">Welcome back</h1>
+    <p id="auth-description" class="text-on-surface-variant mb-7">Sign in to manage your profile and orders.</p>
+    <form id="auth-form" class="space-y-4">
+      <label id="name-field" class="hidden block text-sm font-medium">Full name
+        <input name="name" autocomplete="name" maxlength="100" class="mt-1 w-full rounded border border-outline/50 p-3"/>
+      </label>
+      <label class="block text-sm font-medium">Email
+        <input name="email" type="email" autocomplete="email" required maxlength="254" class="mt-1 w-full rounded border border-outline/50 p-3"/>
+      </label>
+      <label class="block text-sm font-medium">Password
+        <input name="password" type="password" autocomplete="current-password" required minlength="10" maxlength="128" class="mt-1 w-full rounded border border-outline/50 p-3"/>
+        <span id="password-hint" class="hidden mt-1 block text-xs text-on-surface-variant">Use at least 10 characters.</span>
+      </label>
+      <p id="auth-error" class="hidden text-sm text-error" role="alert"></p>
+      <button id="auth-submit" class="w-full bg-primary text-white rounded py-3 font-semibold hover:bg-primary/90" type="submit">Sign in</button>
+    </form>
+    <div class="my-6 flex items-center gap-3 text-xs text-on-surface-variant"><span class="h-px flex-1 bg-primary/15"></span>OR<span class="h-px flex-1 bg-primary/15"></span></div>
+    <div id="google-button" class="flex justify-center"></div>
+    <p id="google-unconfigured" class="hidden text-center text-xs text-on-surface-variant">Google sign-in is unavailable until GOOGLE_CLIENT_ID is configured.</p>
+    <p class="mt-6 text-center text-sm text-on-surface-variant">
+      <span id="toggle-prompt">New to UP Mithas?</span>
+      <button id="auth-toggle" class="ml-1 text-secondary underline font-semibold" type="button">Create an account</button>
+    </p>
+  </section>
+
+  <section id="account-view" class="hidden">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+      <div>
+        <p class="text-secondary uppercase tracking-widest text-xs font-semibold mb-2">Customer account</p>
+        <h1 class="font-headline-md text-3xl md:text-4xl text-primary">Your account</h1>
+      </div>
+      <button id="signout-button" class="border border-primary/30 text-primary rounded px-5 py-2 hover:bg-primary/5">Sign out</button>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <section class="bg-white rounded-xl border border-primary/10 shadow-sm p-6">
+        <h2 class="font-headline-sm text-2xl text-primary mb-5">Profile</h2>
+        <form id="profile-form" class="space-y-4">
+          <label class="block text-sm font-medium">Full name
+            <input name="name" required maxlength="100" class="mt-1 w-full rounded border border-outline/50 p-3"/>
+          </label>
+          <label class="block text-sm font-medium">Email
+            <input name="email" type="email" readonly class="mt-1 w-full rounded border border-outline/50 bg-surface-container-low p-3"/>
+          </label>
+          <label class="block text-sm font-medium">Phone
+            <input name="phone" type="tel" autocomplete="tel" class="mt-1 w-full rounded border border-outline/50 p-3"/>
+          </label>
+          <label class="block text-sm font-medium">Delivery address
+            <textarea name="address" maxlength="250" rows="2" class="mt-1 w-full rounded border border-outline/50 p-3"></textarea>
+          </label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="block text-sm font-medium">City / district
+              <input name="city" maxlength="100" class="mt-1 w-full rounded border border-outline/50 p-3"/>
+            </label>
+            <label class="block text-sm font-medium">State / UT
+              <input name="state" maxlength="100" class="mt-1 w-full rounded border border-outline/50 p-3"/>
+            </label>
+          </div>
+          <label class="block text-sm font-medium">PIN code
+            <input name="postalCode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" class="mt-1 w-full rounded border border-outline/50 p-3"/>
+          </label>
+          <p id="profile-message" class="hidden text-sm" role="status"></p>
+          <button class="bg-primary text-white rounded px-5 py-3 font-semibold hover:bg-primary/90" type="submit">Save profile</button>
+        </form>
+      </section>
+      <section class="bg-white rounded-xl border border-primary/10 shadow-sm p-6">
+        <h2 class="font-headline-sm text-2xl text-primary mb-5">Your orders</h2>
+        <div id="orders-list" class="space-y-4">
+          <p class="text-on-surface-variant text-sm">Loading your orders...</p>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+<script src="account.js"></script>
+</body>
+</html>
